@@ -7,9 +7,11 @@
       <section class="cardSection">
         <div class="cardFocus">
           <div v-if="selectedsiteCard" class="selectedsiteCard">
-            <div class="selectedsite">{{selectedsiteCard.name}}</div>
+            <div class="selectedsite">{{ selectedsiteCard.name }}</div>
             <!--綁定v-bind:clss 接收值 main.js定義方法與變數  -->
-            <div class="aqi" v-bind:class="selectedsiteCard.aqi | aqiClass">{{selectedsiteCard.aqi}}</div>
+            <div class="aqi" v-bind:class="selectedsiteCard.aqi | aqiClass">
+              {{ selectedsiteCard.aqi }}
+            </div>
           </div>
         </div>
         <!--市區卡片 v-on是使用emit子回父接收的值-->
@@ -37,11 +39,11 @@
 </template>
 
 <script>
-import * as axios from "axios";
-import Header from "./components/Header";
-import SiteAirCard from "./components/SiteAirCard";
+import * as axios from 'axios';
+import Header from './components/Header';
+import SiteAirCard from './components/SiteAirCard';
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Header,
     SiteAirCard,
@@ -50,28 +52,28 @@ export default {
     return {
       dataset: [], //api資料
       counties: [], //縣市
-      selectedCounty: "", //子回傳的縣市資料
+      selectedCounty: '', //子回傳的縣市資料
       selectedsiteCard: undefined, //市區
     };
   },
   mounted() {
     axios
       .get(
-        "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json"
+        'https://data.moenv.gov.tw/api/v2/aqx_p_432?language=zh&api_key=a424691a-3649-4c97-83e4-3075486d961e'
       )
       .then((res) => res.data.records)
       .then((records) => {
         records.forEach((record) => {
           //每筆資料都是record
           this.dataset.push({
-            name: record.SiteName, //市區
-            county: record.County, //縣市
-            aqi: record.AQI, //aqi值
-            status: record.Status, //判定空氣是否好
+            name: record.sitename, //市區
+            county: record.county, //縣市
+            aqi: record.aqi, //aqi值
+            status: record.status, //判定空氣是否好
           });
           // indexOf 搜尋record.County 如果沒有這縣市資料 就push進去
-          if (this.counties.indexOf(record.County) === -1) {
-            this.counties.push(record.County);
+          if (this.counties.indexOf(record.county) === -1) {
+            this.counties.push(record.county);
           }
         });
         this.selectedCounty = this.counties[0]; //縣市值第0筆
